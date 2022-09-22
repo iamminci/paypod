@@ -12,7 +12,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import withTransition from "@components/withTransition";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { SimpleGrid } from "@chakra-ui/react";
 import PieChart from "@components/PieChart";
 import Gradient from "javascript-color-gradient";
@@ -28,15 +28,6 @@ const gradientArray = new Gradient()
   .getColors();
 
 const data = [
-  // {
-  //   id: 999,
-  //   label: "Demo Pod",
-  //   address: "0x17e547d79C04D01E49fEa275Cf32ba06554f9dF7",
-  //   value: 0,
-  //   network: "Fuji Testnet",
-  //   networkLogo: "/avax.png",
-  //   lastTransacted: "--",
-  // },
   {
     id: 0,
     label: "Pizza Game",
@@ -133,58 +124,86 @@ const sortedTokenData = [...tokenData].sort(
   (a: any, b: any) => b.value - a.value
 );
 
-const aggregateBalance = data.reduce((acc: any, token: any) => {
-  return acc + Number(token.value);
-}, 0);
+// const aggregateBalance = data.reduce((acc: any, token: any) => {
+//   return acc + Number(token.value);
+// }, 0);
 
 function Main() {
   const router = useRouter();
   const { address } = useAccount();
 
+  if (!address) return <></>;
+
   function getContent() {
     switch (router.asPath) {
       case "/":
-        return <Overview />;
+        return <Overview address={address!} />;
       case "/#create":
         return <Create />;
       case "/#pod":
         return <Pod />;
       default:
-        return <Overview />;
+        return <Overview address={address!} />;
     }
   }
 
   return <div className={styles.container}>{getContent()}</div>;
 }
 
-function Overview() {
+type OverviewProps = {
+  address: string;
+};
+
+function Overview({ address }: OverviewProps) {
+  const { data: balance } = useBalance({ addressOrName: address });
+
+  console.log("balance: ", balance);
+
+  const userTokenData = [
+    {
+      id: 0,
+      label: "AVAX",
+      value: balance?.formatted,
+      network: "Avalanche C-Chain",
+      networkLogo: "/avax.png",
+      lastTransacted: "08/03/22",
+      color: "#ff3131",
+    },
+  ];
+
+  const chartData = userTokenData.map((token: any, idx: number) => {
+    return {
+      label: abridgeLabel(token.label),
+      value: token.value,
+      color: gradientArray[token.id],
+    };
+  });
+
   return (
     <HStack className={styles.contentContainer} gap={2}>
       <VStack className={styles.overviewContainer}>
         <Text className={styles.header}>Overview</Text>
         <Text className={styles.balanceHeader}>Your Total Balance</Text>
         <Text className={styles.fiatBalance}>
-          ${aggregateBalance.toFixed(2)}
+          {Number(balance?.formatted).toFixed(2)} AVAX
         </Text>
         <Box className={styles.pieChartContainer}>
-          <PieChart data={tokenData} />
+          <PieChart data={chartData} />
         </Box>
         <VStack className={styles.scoreListContainer}>
-          {sortedTokenData.map(({ label, value, color }: any, idx: number) => (
+          {userTokenData.map(({ label, value, color }: any, idx: number) => (
             <HStack key={idx} className={styles.scoreContainer}>
               <Text className={styles.scoreTitleLabel}>{label}</Text>
               <Box className={`${styles.scoreBarContainer}`}>
                 <Box
                   style={{
                     backgroundColor: color,
-                    width: `${((value / aggregateBalance) * 100).toFixed(0)}%`,
+                    width: `${100}%`,
                   }}
                   className={`${styles.scoreBar}`}
                 ></Box>
               </Box>
-              <Text className={styles.scoreLabel}>
-                {((value / aggregateBalance) * 100).toFixed(0)}%
-              </Text>
+              <Text className={styles.scoreLabel}>{100}%</Text>
             </HStack>
           ))}
         </VStack>
@@ -197,7 +216,10 @@ function Overview() {
             <Button className={styles.createPod}>+ Create Pod</Button>
           </Link>
         </HStack>
-        <SimpleGrid columns={3} gap={6} className={styles.podGrid}>
+        <VStack w="100%" height="600px" paddingTop="30%">
+          <Text>You do not own any pods.</Text>
+        </VStack>
+        {/* <SimpleGrid columns={3} gap={6} className={styles.podGrid}>
           {data.map(
             ({ label, value, network, networkLogo, lastTransacted }) => (
               <Link key={label} href="/#pod">
@@ -221,7 +243,7 @@ function Overview() {
               </Link>
             )
           )}
-        </SimpleGrid>
+        </SimpleGrid> */}
       </VStack>
     </HStack>
   );
