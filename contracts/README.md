@@ -1,12 +1,63 @@
-One of the main bottlenecks to the adoption of web3 gaming is the user experience. Namely, in web3 games when a player has to make a simple token transfer or an update to an on-chain state, the current experience requires players to use their wallet to confirm a transaction in the middle of gameplay which is disruptive to the player experience - as it completely takes them out of the moment. But what if there was a way that in-game payments are as seamless as they are in traditional web2 games?
+# PayPod Protocol Contract
 
-That’s why I’ve built PayPod. On the PayPod platform, a pod is a smart contract that acts as an account abstraction for players in web3 games. Like a prepaid card, a user can deposit funds into a pod they’ve created for a specific game, then allow the game’s contracts to control the funds in the pod such that the in-game payment experience becomes truly seamless.
+## Roles:
 
-PayPod is a platform that allows users to easily deploy and manage their pods that allows web3 games to handle in-game payments on behalf of the users.
+1. `Owner` (withdraw, setControllers, pause/unpause contract)
+2. `Controllers` (spend tokens, make contract calls)
 
-Features
+## Core functionalities:
 
-1. Create a pod for a web3 game of your choice
-2. Assign games as controllers to the pod for account management
-3. Manage pod balance, ownership, and transaction history
-4. Onboarding documents for web3 games to integrate into existing projects
+1. Spend/SpendERC20
+2. Call (`CALL` or `CREATE`)
+3. Withdraw/WithdrawERC20
+4. Pause/Unpause
+
+---
+
+## Controller Function Interface
+
+### Spend
+
+`function spend(address _recipient, uint256 _amount) external onlyController whenNotPaused whenNotExpired`
+
+Native token spend function for controllers to transfer specified amount of token to recipient
+
+### SpendERC20
+
+`function spendERC20( address _tokenAddress, address _recipient, uint256 _amount ) external onlyController whenNotPaused whenNotExpired`
+
+ERC20 token spend function for controllers to transfer specified amount of token to recipient
+
+### Execute Contract Call / Deploy contract
+
+`function call(uint256 operation, address to, uint256 value, bytes memory data ) public payable virtual onlyOwner whenNotPaused whenNotExpired returns (bytes memory result)`
+
+Function to execute arbitrary `CALL` or `CREATE` where operation = 0 is `CALL` and operation = 1 is `CREATE`
+
+---
+
+## Owner Function Interface
+
+### Withdraw
+
+`function withdraw(uint256 _amount, bool _withdrawAll) external onlyOwner`
+
+Withdraw function for owner to transfer specified native token balance to themselves (\_withdrawAll sends entire balance)
+
+### WithdrawERC20
+
+`function withdrawERC20( address _tokenAddress, uint256 _amount, bool _withdrawAll ) external onlyOwner`
+
+Withdraw function for owner to transfer specified ERC20 token balance to themselves (\_withdrawAll sends entire balance)
+
+### Pause
+
+`function pause() public onlyOwner`
+
+Pauses controller functionalities on the pod.
+
+### Unpause
+
+`function unpause() public onlyOwner`
+
+Unpauses controller functionalities on the pod.
