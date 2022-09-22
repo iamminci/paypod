@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import withTransition from "@components/withTransition";
 import { useNetwork, useSigner, useSwitchNetwork } from "wagmi";
 import { ethers } from "ethers";
-import Paypod from "@data/Paypod.json";
+import Paypod from "@data/PayPod.json";
 import SuccessContainer from "./Success";
 import { useRouter } from "next/router";
 
