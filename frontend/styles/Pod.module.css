@@ -1,0 +1,403 @@
+.container {
+  box-sizing: border-box;
+  width: 1375px;
+  height: 750px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start !important;
+}
+
+.podDetailContainer {
+  display: flex;
+  align-items: flex-start !important;
+  width: 50%;
+  height: 650px;
+  overflow-y: scroll;
+}
+
+.txnContainer {
+  display: flex;
+  width: 50%;
+  height: 650px;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.transactionHeaderLabel {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 25px;
+  padding: 0.5rem !important;
+}
+
+.tableCell {
+  padding: 1rem 0.5rem !important;
+}
+
+.tableDateCell {
+  padding: 1rem 0.5rem !important;
+  font-weight: 700;
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-y: scroll;
+  max-height: 620px;
+}
+
+.tokenImage {
+  width: 62px;
+  height: 62px;
+}
+
+.header {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.balanceHeader {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.fiatBalance {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.tokenBalance {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.scoreListContainer {
+  color: #808080;
+  height: 220px;
+  overflow-y: scroll;
+  align-items: flex-start !important;
+}
+
+.scoreContainer {
+  padding-top: 0.5rem;
+}
+
+.scoreBarTokenLabel {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.scoreBarContainer {
+  position: relative;
+  width: 200px;
+  height: 10px;
+  background: rgba(217, 217, 217, 0.5);
+}
+
+.scoreTitleLabel {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  width: 6rem;
+}
+
+.scoreLabel {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  padding-left: 0.5rem;
+}
+
+.podHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.createPod {
+  width: 181px;
+  height: 47px;
+  color: white;
+  background: #000000 !important;
+  border-radius: 30px !important;
+  transition: 2s ease-in-out;
+}
+
+.createPod:hover {
+  background: #494949 !important;
+}
+
+.podGrid {
+  height: 630px;
+  overflow-y: scroll;
+}
+
+.pod {
+  display: flex;
+  align-items: flex-start !important;
+  justify-content: space-between;
+  width: 265px;
+  height: 265px;
+  background: linear-gradient(117.17deg, #fdf2db 7.68%, #ffe9ba 91.17%);
+  border-radius: 30px;
+  padding: 2rem;
+  cursor: pointer;
+}
+
+.networkLogo {
+  width: 26px;
+  height: 26px;
+}
+
+.podTitle {
+  font-weight: 700;
+  font-size: 20px;
+
+  color: #7e7e7e;
+}
+
+.podBalance {
+  font-weight: 700;
+  font-size: 40px;
+
+  color: #000000;
+}
+
+.podNetwork {
+  font-weight: 400;
+  font-size: 14px;
+
+  color: #7e7e7e;
+}
+
+.podLastTransacted {
+  font-weight: 400;
+  font-size: 15px;
+
+  color: #7e7e7e;
+}
+
+.podTopSection {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+}
+
+.ctaButtonContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ctaButton {
+  width: 50px !important;
+  height: 50px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: #000000 !important;
+  border-radius: 50% !important;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+
+  color: white;
+  transition: 0.2 ease-in-out;
+}
+
+.ctaButton:hover {
+  background: #2a2a2a !important;
+}
+
+.podHeaderContainer {
+  width: 100%;
+  justify-content: space-between;
+  align-items: space-between;
+}
+
+.accordianContainer {
+  width: 100%;
+}
+
+.accordion {
+  width: 100%;
+}
+
+.accordionItem {
+  width: 100%;
+}
+
+.tokenCell {
+  width: 100%;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.tokenListCellRightSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end !important;
+}
+
+.NFTListCellContainer {
+  width: 100%;
+  overflow-y: scroll;
+}
+
+.VaultNFTListCell {
+  width: 100%;
+  display: flex;
+  justify-content: space-between !important;
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+
+.NFTListCell {
+  width: 100%;
+  display: flex;
+  justify-content: space-between !important;
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+
+.NFTListCell:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.NFTName {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.NFTListCellNameContainer {
+  width: 100%;
+  display: flex;
+  align-items: flex-start !important;
+  padding: 0 0.5rem;
+}
+
+.NFTListCellFooter {
+  width: 100%;
+  display: flex;
+  align-items: flex-end !important;
+  padding: 0 0.5rem;
+}
+
+.NFTImage {
+  width: 150px;
+  height: 150px;
+}
+
+.NFTCollectionName {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.NFTTokenID {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.vaultPermissionsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start !important;
+  width: 100%;
+}
+
+.reportButton {
+  width: 100px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: rgb(159, 159, 159) !important;
+  border-radius: 20px !important;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  transition: 0.2 ease-in-out;
+  color: white;
+
+  opacity: 0.6;
+}
+
+.vaultPermissionButton {
+  width: 100px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: rgb(227, 116, 116) !important;
+  border-radius: 20px !important;
+
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  transition: 0.2 ease-in-out;
+  color: white;
+
+  opacity: 0.6;
+}
+
+.vaultPermissionButton:hover {
+  opacity: 1;
+}
+
+.vaultPermissionTitle {
+  padding-right: 10px;
+}
+
+.txnHeaderContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start !important;
+}

@@ -1,0 +1,51 @@
+.detailContainer {
+  width: 43%;
+}
+
+.detailContainerTitleBox {
+  width: 100%;
+  display: flex;
+  justify-content: space-between !important;
+  padding: 0 1rem 0 2rem;
+  position: relative;
+}
+
+.detailContainerTitle {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 37px;
+}
+
+.sentContainer {
+  position: relative;
+}
+
+.sentContainerLottie {
+  position: absolute;
+}
+
+.sentContainerTextContainer {
+  padding-top: 420px;
+}
+
+.sentContainerTitle {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 37px;
+}
+
+.sentContainerSubtitle {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 59px;
+
+  opacity: 0.6;
+
+  padding-bottom: 3rem;
+}

@@ -1,0 +1,267 @@
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start !important;
+}
+
+.createPodContainer {
+  display: flex;
+  align-items: flex-start !important;
+  gap: 0.4rem;
+  width: 43%;
+  overflow-y: scroll;
+}
+
+.podContainer {
+  display: flex;
+  height: 100%;
+  width: 57%;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.createPodHeader {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-size: 40px;
+  padding-top: 10px;
+  line-height: 30px;
+}
+
+.header {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start !important;
+  width: 100%;
+}
+
+.inputHeader {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.inputSubheader {
+  font-weight: 500;
+  font-size: 16px;
+  padding-left: 1rem;
+
+  color: #a7a7a7;
+  cursor: pointer;
+}
+
+.inputSubheader:hover {
+  color: #363636;
+}
+
+.whatIsPodText {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.whatIsPodContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start !important;
+  gap: 0.5rem;
+}
+
+.diagram {
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  background: #f9f9f9 !important;
+  border: none !important;
+  border-radius: 10px;
+}
+
+.buttonContainer {
+  width: 100%;
+  justify-content: center;
+}
+
+.cancelButton {
+  width: 220px !important;
+  height: 48px !important;
+
+  background: #f9f9f9 !important;
+  border: 1px solid #ababab !important;
+  border-radius: 20px !important;
+  transition: 2s ease-in-out;
+}
+
+.cancelButton:hover {
+  background: #ffffff !important;
+  border: 1px solid #dbdbdb !important;
+}
+
+.createButton {
+  width: 220px !important;
+  height: 48px !important;
+  color: white;
+
+  background: #000000 !important;
+  border: 1px solid #ababab !important;
+  border-radius: 20px !important;
+  transition: 2s ease-in-out;
+}
+
+.createButton:hover {
+  background: #4a4a4a !important;
+}
+
+.switchContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center !important;
+}
+
+.switchDescription {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.select {
+  background: #f9f9f9 !important;
+  border: none !important;
+  border-radius: 10px;
+}
+
+.balanceHeader {
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.fiatBalance {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.scoreListContainer {
+  color: #808080;
+  height: 220px;
+  overflow-y: scroll;
+  align-items: flex-start !important;
+}
+
+.scoreContainer {
+  padding-top: 0.5rem;
+}
+
+.scoreBarTokenLabel {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.scoreBarContainer {
+  position: relative;
+  width: 200px;
+  height: 10px;
+  background: rgba(217, 217, 217, 0.5);
+}
+
+.scoreTitleLabel {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  width: 6rem;
+}
+
+.scoreLabel {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  padding-left: 0.5rem;
+}
+
+.podHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.createPod {
+  width: 181px;
+  height: 47px;
+  color: white;
+  background: #000000 !important;
+  border-radius: 30px !important;
+}
+
+.podGrid {
+  height: 630px;
+  overflow-y: scroll;
+}
+
+.pod {
+  width: 265px;
+  height: 265px;
+
+  background: linear-gradient(117.17deg, #fdf2db 7.68%, #ffe9ba 91.17%);
+  border-radius: 30px;
+
+  padding: 2rem;
+
+  display: flex;
+  align-items: flex-start !important;
+  justify-content: space-between;
+}
+
+.networkLogo {
+  width: 26px;
+  height: 26px;
+}
+
+.podTitle {
+  font-weight: 700;
+  font-size: 20px;
+
+  color: #7e7e7e;
+}
+
+.podBalance {
+  font-weight: 700;
+  font-size: 40px;
+
+  color: #000000;
+}
+
+.podNetwork {
+  font-weight: 400;
+  font-size: 14px;
+
+  color: #7e7e7e;
+}
+
+.podLastTransacted {
+  font-weight: 400;
+  font-size: 15px;
+
+  color: #7e7e7e;
+}
+
+.podTopSection {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+}

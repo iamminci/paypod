@@ -1,0 +1,173 @@
+.container {
+  box-sizing: border-box;
+  width: 1375px;
+  height: 720px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  margin-top: 4%;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start !important;
+}
+
+.overviewContainer {
+  display: flex;
+  align-items: flex-start !important;
+}
+
+.podContainer {
+  display: flex;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.header {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.balanceHeader {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.fiatBalance {
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 60px;
+}
+
+.scoreListContainer {
+  color: #808080;
+  height: 185px;
+  overflow-y: scroll;
+  align-items: flex-start !important;
+}
+
+.scoreContainer {
+  padding-top: 0.5rem;
+}
+
+.scoreBar {
+  position: absolute;
+  width: 75%;
+  height: 100%;
+
+  border-radius: 10px;
+  background: #e38627;
+}
+
+.scoreBarTokenLabel {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.scoreBarContainer {
+  position: relative;
+  width: 200px;
+  height: 10px;
+  background: rgba(217, 217, 217, 0.5);
+}
+
+.scoreTitleLabel {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  width: 6rem;
+}
+
+.scoreLabel {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  padding-left: 0.5rem;
+}
+
+.podHeaderContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.createPod {
+  width: 181px;
+  height: 47px;
+  color: white;
+  background: #000000 !important;
+  border-radius: 30px !important;
+  transition: 2s ease-in-out;
+}
+
+.createPod:hover {
+  background: #494949 !important;
+}
+
+.podGrid {
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.pod {
+  display: flex;
+  align-items: flex-start !important;
+  justify-content: space-between;
+  width: 265px;
+  height: 265px;
+  background: linear-gradient(117.17deg, #fdf2db 7.68%, #ffe9ba 91.17%);
+  border-radius: 30px;
+  padding: 2rem;
+  cursor: pointer;
+}
+
+.networkLogo {
+  width: 26px;
+  height: 26px;
+}
+
+.podTitle {
+  font-weight: 700;
+  font-size: 20px;
+
+  color: #7e7e7e;
+}
+
+.podBalance {
+  font-weight: 700;
+  font-size: 40px;
+
+  color: #000000;
+}
+
+.podNetwork {
+  font-weight: 400;
+  font-size: 14px;
+
+  color: #7e7e7e;
+}
+
+.podLastTransacted {
+  font-weight: 400;
+  font-size: 15px;
+
+  color: #7e7e7e;
+}
+
+.podTopSection {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+}

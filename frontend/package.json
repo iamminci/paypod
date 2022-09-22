@@ -9,11 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.10",
+    "@chakra-ui/react": "^2.3.4",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@rainbow-me/rainbowkit": "^0.6.1",
+    "alchemy-sdk": "^2.0.5-rc1",
+    "ethers": "^5.7.1",
+    "framer-motion": "^6.5.1",
+    "javascript-color-gradient": "^2.4.4",
+    "lodash.merge": "^4.6.2",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
+    "react-lottie": "^1.2.3",
+    "react-minimal-pie-chart": "^8.3.0",
+    "wagmi": "^0.6.6"
   },
   "devDependencies": {
+    "@types/javascript-color-gradient": "^2.4.0",
+    "@types/lodash.merge": "^4.6.7",
     "@types/node": "18.7.18",
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
