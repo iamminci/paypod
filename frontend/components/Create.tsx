@@ -14,11 +14,13 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import withTransition from "@components/withTransition";
-import { useNetwork, useSigner, useSwitchNetwork } from "wagmi";
+import { useAccount, useNetwork, useSigner, useSwitchNetwork } from "wagmi";
 import { ethers } from "ethers";
 import Paypod from "@data/PayPod.json";
 import SuccessContainer from "./Success";
 import { useRouter } from "next/router";
+import { arrayUnion, doc, setDoc } from "firebase/firestore";
+import db from "@firebase/firebase";
 
 const networks = [
   {
@@ -31,9 +33,11 @@ const networks = [
   },
   {
     name: "Swimmer Network",
+    chainId: 73772,
   },
   {
     name: "DFK Subnet",
+    chainId: 53935,
   },
   {
     name: "Custom",
@@ -41,16 +45,22 @@ const networks = [
 ];
 
 function Create() {
+  const { address } = useAccount();
   const { data: signer, isError } = useSigner();
+  const [podName, setPodName] = useState("");
+  const { isLoading: isSwitchNetworkLoading, switchNetwork } =
+    useSwitchNetwork();
+
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChainId, setSelectedChainId] = useState(43114);
   const [controllers, setControllers] = useState([]);
+  const [expirationDate, setExpirationDate] = useState("");
   const [limitTokenAddresses, setLimitTokenAddresses] = useState([]);
   const [spendLimits, setSpendLimits] = useState([]);
+  const [agreed, setAgreed] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
   const router = useRouter();
-  const { isLoading: isSwitchNetworkLoading, switchNetwork } =
-    useSwitchNetwork();
 
   function handleNetworkChange(e: any) {
     switchNetwork?.(Number(e.target.value));
@@ -68,23 +78,34 @@ function Create() {
       );
 
       const contract = await contractFactory.deploy(
+        podName,
         controllers,
         limitTokenAddresses,
         spendLimits,
         0
       );
 
-      console.log("contrat deployed");
-      console.log("contract: ", contract);
-      console.log("contract address: ", contract.address);
       handleSuccess();
 
-      // setPublishedContract(contract.address);
-      // saveContract(contract.address, imageURI);
+      saveContract(contract.address);
     } catch (err) {
       console.log(err);
     }
     setIsLoading(false);
+  }
+
+  async function saveContract(contractAddress: string) {
+    if (!address) return;
+
+    const newPod = {
+      address: contractAddress,
+      network: selectedChainId,
+    };
+
+    const docRef = doc(db, "addresses", address);
+    await setDoc(docRef, {
+      pods: arrayUnion(newPod),
+    });
   }
 
   function handleSuccess() {
@@ -93,6 +114,30 @@ function Create() {
       setIsSuccess(false);
       router.push("/");
     }, 3000);
+  }
+
+  function handlePodNameChange(e: any) {
+    setPodName(e.target.value);
+  }
+
+  function handleControllerChange(e: any) {
+    setControllers(e.target.value.split(","));
+  }
+
+  function handleLimitTokenAddressChange(e: any) {
+    setLimitTokenAddresses(e.target.value.split(","));
+  }
+
+  function handleSpendLimitChange(e: any) {
+    setSpendLimits(e.target.value.split(","));
+  }
+
+  function handleAgreeSwitch(e: any) {
+    setAgreed(e.target.checked);
+  }
+
+  function handleExpirationDateChange(e: any) {
+    setExpirationDate(e.target.value);
   }
 
   return (
@@ -104,7 +149,11 @@ function Create() {
           <Text className={styles.createPodHeader}>Create a Pod</Text>
           <VStack className={styles.inputContainer}>
             <Text className={styles.inputHeader}>Pod Name</Text>
-            <Input placeholder="Enter pod name" className={styles.input} />
+            <Input
+              placeholder="Enter pod name"
+              className={styles.input}
+              onChange={handlePodNameChange}
+            />
           </VStack>
           <VStack className={styles.inputContainer}>
             <Text className={styles.inputHeader}>Network</Text>
@@ -123,10 +172,11 @@ function Create() {
           <VStack className={styles.inputContainer}>
             <Text className={styles.inputHeader}>Controller Address</Text>
             <Input
-              placeholder="Enter controller address"
+              placeholder="Enter controller addresses (comma separated)"
               className={styles.input}
+              onChange={handleControllerChange}
             />
-            <Text className={styles.inputSubheader}>+ Add New Controller</Text>
+            {/* <Text className={styles.inputSubheader}>+ Add New Controller</Text> */}
           </VStack>
           <VStack className={styles.inputContainer}>
             <Text className={styles.inputHeader}>
@@ -134,12 +184,17 @@ function Create() {
             </Text>
             <HStack w="100%">
               <Input
-                placeholder="Enter token address"
+                placeholder="e.g. addr1, addr2 ..."
                 className={styles.input}
+                onChange={handleLimitTokenAddressChange}
               />
-              <Input placeholder="Enter spend limit" className={styles.input} />
+              <Input
+                placeholder="e.g. amount1, amount2 ..."
+                className={styles.input}
+                onChange={handleSpendLimitChange}
+              />
             </HStack>
-            <Text className={styles.inputSubheader}>+ Add New Spend Limit</Text>
+            {/* <Text className={styles.inputSubheader}>+ Add New Spend Limit</Text> */}
           </VStack>
           <VStack className={styles.inputContainer}>
             <Text className={styles.inputHeader}>
@@ -148,13 +203,14 @@ function Create() {
             <Input
               placeholder="Enter expiration date (e.g. 09-09-2023)"
               className={styles.input}
+              onChange={handleExpirationDateChange}
             />
           </VStack>
           <HStack className={styles.switchContainer}>
             <Switch
               colorScheme="red"
-              onChange={() => {}}
               className={styles.switch}
+              onChange={handleAgreeSwitch}
             />
             <Text className={styles.switchDescription}>
               I acknowledge that controller addresses have full access to the
@@ -168,7 +224,11 @@ function Create() {
                 Cancel
               </Button>
             </Link>
-            <Button className={styles.createButton} onClick={deployContract}>
+            <Button
+              className={styles.createButton}
+              onClick={deployContract}
+              isDisabled={!agreed}
+            >
               {isLoading ? <Spinner color="white" /> : "Create"}
             </Button>
           </HStack>

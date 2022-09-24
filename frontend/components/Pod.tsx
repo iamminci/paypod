@@ -27,16 +27,15 @@ import { FaRegPaperPlane, FaBinoculars, FaPause } from "react-icons/fa";
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import withTransition from "@components/withTransition";
 import txnData from "@data/data.json";
-import {
-  abridgeAddress,
-  abridgeMethod,
-  convertCamelCaseToWords,
-  removeWhitespaceAroundString,
-} from "@utils/helpers";
+import { removeWhitespaceAroundString } from "@utils/helpers";
 import { formatEther, formatUnits } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
 import { Network, Alchemy } from "alchemy-sdk";
-import { useAccount } from "wagmi";
+import { useAccount, useProvider } from "wagmi";
+import { doc, getDoc } from "firebase/firestore";
+import db from "@firebase/firebase";
+import { getPodInfo } from "./Main";
+import { useRouter } from "next/router";
 
 const tokenData = [
   {
@@ -63,17 +62,76 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 function Pod() {
+  const router = useRouter();
+  const contractAddress = router.asPath.split("/")[2];
   const { address } = useAccount();
   const [tokenBalances, setTokenBalances] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<{ [key: string]: any }>({});
   const [transactionsMap, setTransactionsMap] = useState<{
     [key: string]: any;
   }>({});
+  const [pod, setPod] = useState<any>([]);
+  const provider = useProvider();
+  const avaxProvider = useProvider({ chainId: 43114 });
+  const fujiProvider = useProvider({ chainId: 43113 });
+  const swimmerProvider = useProvider({ chainId: 73772 });
+  const dfkProvider = useProvider({ chainId: 53935 });
+
+  useEffect(() => {
+    // setIsLoading(true);
+    async function fetchPods() {
+      const tempPods = [];
+      if (!address) return;
+      const docRef = doc(db, "addresses", address);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const { pods: fetchedPods } = data;
+
+        for (let i = 0; i < fetchedPods.length; i++) {
+          const podAddress = fetchedPods[i].address;
+          const podChainId = fetchedPods[i].network;
+
+          let podProvider;
+          if (contractAddress === podAddress) {
+            switch (podChainId) {
+              case 43114:
+                podProvider = avaxProvider;
+                break;
+              case 43113:
+                podProvider = fujiProvider;
+                break;
+              case 73772:
+                podProvider = swimmerProvider;
+                break;
+              case 53935:
+                podProvider = dfkProvider;
+                break;
+              default:
+                podProvider = provider;
+                break;
+            }
+
+            const podInfo = await getPodInfo(
+              podChainId,
+              podAddress,
+              podProvider
+            );
+
+            setPod(podInfo);
+          }
+        }
+      } else {
+        console.log("No such document!");
+      }
+      // setIsLoading(false);
+    }
+    fetchPods();
+  }, [address]);
 
   function processTransactions(data: any) {
     const processedTxns: { [key: string]: any } = {};
     const processedTxnsFlat: { [key: string]: any } = {};
-    console.log(data);
 
     for (let i = 0; i < data.length; i++) {
       const txn = data[i];
@@ -153,7 +211,6 @@ function Pod() {
   useEffect(() => {
     async function fetchTokenBalances() {
       const etherBalance = await alchemy.core.getBalance(address as string);
-      console.log(formatEther(etherBalance));
       const { tokenBalances: balances } = await alchemy.core.getTokenBalances(
         address as string,
         "DEFAULT_TOKENS" as any
@@ -171,15 +228,12 @@ function Pod() {
         } else {
           token.formattedBalance = formatUnits(token.tokenBalance, 18);
         }
-        console.log("token.formattedBalance: ", token.formattedBalance);
       });
 
       filterWithBalances.push({
         contractAddress: "",
         tokenBalance: formatEther(etherBalance),
       });
-
-      console.log("filterWithBalances", filterWithBalances);
 
       setTokenBalances(filterWithBalances);
     }
@@ -191,7 +245,7 @@ function Pod() {
     <HStack className={styles.contentContainer} gap={2}>
       <VStack className={styles.podDetailContainer}>
         <HStack className={styles.podHeaderContainer}>
-          <Text className={styles.header}>Pizza Game</Text>
+          <Text className={styles.header}>{pod && pod.name}</Text>
           <HStack className={styles.ctaButtonContainer}>
             <Tooltip label="Deposit" aria-label="A tooltip">
               <Button className={styles.ctaButton} onClick={() => {}}>
@@ -228,7 +282,7 @@ function Pod() {
         </HStack>
         <VStack className={styles.balanceContainer}>
           <Text className={styles.tokenBalance}>Token Balance</Text>
-          <Text className={styles.fiatBalance}>$364.61</Text>
+          <Text className={styles.fiatBalance}>$0.00</Text>
         </VStack>
         <VStack className={styles.accordianContainer} gap={3}>
           <Accordion
@@ -241,12 +295,12 @@ function Pod() {
                 <AccordionButton className={styles.accordionButton}>
                   <HStack flex="1">
                     <Text className={styles.NFTdetailTitle}>Tokens</Text>
-                    <Text className={styles.NFTdetailSubtitle}>2</Text>
+                    <Text className={styles.NFTdetailSubtitle}>0</Text>
                   </HStack>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
-              <AccordionPanel pb={4}>
+              {/* <AccordionPanel pb={4}>
                 {tokenData.map((token: any, idx: any) => (
                   <HStack key={idx} className={styles.tokenCell}>
                     <HStack className={styles.tokenListCellLeftSection}>
@@ -267,19 +321,19 @@ function Pod() {
                     </VStack>
                   </HStack>
                 ))}
-              </AccordionPanel>
+              </AccordionPanel> */}
             </AccordionItem>
             <AccordionItem className={styles.accordionItem}>
               <h2>
                 <AccordionButton className={styles.accordionButton}>
                   <HStack flex="1">
                     <Text className={styles.NFTdetailTitle}>NFTs</Text>
-                    <Text className={styles.NFTdetailSubtitle}>3</Text>
+                    <Text className={styles.NFTdetailSubtitle}>0</Text>
                   </HStack>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
-              <AccordionPanel pb={4}>
+              {/* <AccordionPanel pb={4}>
                 <SimpleGrid columns={3} spacing={0}>
                   {[
                     {
@@ -321,7 +375,7 @@ function Pod() {
                     </VStack>
                   ))}
                 </SimpleGrid>
-              </AccordionPanel>
+              </AccordionPanel> */}
             </AccordionItem>
 
             <AccordionItem className={styles.accordionItem}>
@@ -329,12 +383,12 @@ function Pod() {
                 <AccordionButton className={styles.accordionButton}>
                   <HStack flex="1">
                     <Text className={styles.NFTdetailTitle}>Controllers</Text>
-                    <Text className={styles.NFTdetailSubtitle}>1</Text>
+                    <Text className={styles.NFTdetailSubtitle}>0</Text>
                   </HStack>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
-              <AccordionPanel pb={4}>
+              {/* <AccordionPanel pb={4}>
                 {[
                   { address: "0x28a6204E03c43BD4580c3664f7F0B4d862004C96" },
                 ].map((permission, idx) => (
@@ -355,7 +409,7 @@ function Pod() {
                     </Text>
                   </HStack>
                 ))}
-              </AccordionPanel>
+              </AccordionPanel> */}
             </AccordionItem>
           </Accordion>
         </VStack>
@@ -368,7 +422,12 @@ function Pod() {
             <Button className={styles.reportButton}>Report</Button>
           </Tooltip> */}
         </HStack>
-        <Box className={styles.tableContainer}>
+        {
+          <VStack w="100%" height="600px" paddingTop="30%">
+            <Text>This pod has no transactions yet.</Text>
+          </VStack>
+        }
+        {/* {<Box className={styles.tableContainer}>
           <TableContainer>
             <Table variant="unstyled">
               <Thead>
@@ -429,30 +488,7 @@ function Pod() {
               </Tbody>
             </Table>
           </TableContainer>
-        </Box>
-        {/* <SimpleGrid columns={3} gap={6} className={styles.podGrid}>
-          {data.map(
-            ({ label, value, network, networkLogo, lastTransacted }) => (
-              <VStack key={label} className={styles.pod}>
-                <VStack className={styles.podTopSection}>
-                  <Text className={styles.podTitle}>{label}</Text>
-                  <Text className={styles.podBalance}>${value}</Text>
-                  <HStack>
-                    <Image
-                      src={networkLogo}
-                      alt={label}
-                      className={styles.networkLogo}
-                    />
-                    <Text className={styles.podNetwork}>{network}</Text>
-                  </HStack>
-                </VStack>
-                <Text className={styles.podLastTransacted}>
-                  Last Transacted: {lastTransacted}
-                </Text>
-              </VStack>
-            )
-          )}
-        </SimpleGrid> */}
+        </Box>} */}
       </VStack>
     </HStack>
   );

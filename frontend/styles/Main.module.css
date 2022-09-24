@@ -19,6 +19,7 @@
 .overviewContainer {
   display: flex;
   align-items: flex-start !important;
+  width: 50%;
 }
 
 .podContainer {
@@ -119,6 +120,7 @@
 
 .podGrid {
   height: 600px;
+  width: 100%;
   overflow-y: scroll;
 }
 

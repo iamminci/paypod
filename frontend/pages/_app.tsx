@@ -57,8 +57,63 @@ const fujiChain: Chain = {
   testnet: true,
 };
 
+const swimmerNetwork: Chain = {
+  id: 73772,
+  name: "Swimmer Network",
+  network: "swimmer",
+  iconUrl: "/swimmer.png",
+  iconBackground: "#fff",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Treasure Under Sea",
+    symbol: "TUS",
+  },
+  rpcUrls: {
+    default: "https://avax-cra-rpc.gateway.pokt.network/",
+  },
+  blockExplorers: {
+    default: {
+      name: "Swimmer Explorer",
+      url: "https://explorer.swimmer.network/",
+    },
+    etherscan: {
+      name: "Swimmer Explorer",
+      url: "https://explorer.swimmer.network/",
+    },
+  },
+  testnet: false,
+};
+
+const dfkChain: Chain = {
+  id: 53935,
+  name: "DFK Subnet",
+  network: "DFK",
+  iconUrl: "/dfk.png",
+  iconBackground: "#fff",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Jewel",
+    symbol: "JEWEL",
+  },
+  rpcUrls: {
+    default:
+      "https://avax-dfk.gateway.pokt.network/v1/lb/6244818c00b9f0003ad1b619//ext/bc/q2aTwKuyzgs8pynF7UXBZCU7DejbZbZ6EUyHr3JQzYgwNPUPi/rpc",
+  },
+  blockExplorers: {
+    default: {
+      name: "DFK Explorer",
+      url: "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer",
+    },
+    etherscan: {
+      name: "DFK Explorer",
+      url: "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer",
+    },
+  },
+  testnet: true,
+};
+
 const { chains, provider } = configureChains(
-  [avalancheChain, fujiChain],
+  [avalancheChain, fujiChain, swimmerNetwork, dfkChain],
   [publicProvider()]
 );
 
