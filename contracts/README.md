@@ -30,9 +30,17 @@ ERC20 token spend function for controllers to transfer specified amount of token
 
 ### Execute Contract Call / Deploy contract
 
-`function call(uint256 operation, address to, uint256 value, bytes memory data ) public payable virtual onlyOwner whenNotPaused whenNotExpired returns (bytes memory result)`
+`function call(address to, uint256 value, bytes memory data) public payable virtual onlyOwner whenNotPaused whenNotExpired returns (bytes memory result)`
 
-Function to execute arbitrary `CALL` or `CREATE` where operation = 0 is `CALL` and operation = 1 is `CREATE`
+Function to execute arbitrary `CALL`
+
+### Deploy contract
+
+`function call(address to, uint256 value, bytes memory data) public payable virtual onlyOwner whenNotPaused whenNotExpired returns (bytes memory result)`
+
+Function to execute arbitrary `CREATE`
+
+Support for STATICCALL, DELEGATECALL, CREATE2 coming soon.
 
 ---
 

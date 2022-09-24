@@ -5,16 +5,18 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./Roles.sol";
+import "./Controllable.sol";
 
-contract PayPod is Ownable, Pausable {
-    using Roles for Roles.Role;
+contract PayPod is Ownable, Pausable, Controllable {
     using SafeERC20 for IERC20;
-    Roles.Role private _controllers;
 
-    mapping(address => uint256) spendLimits;
+    mapping(address => uint256) public spendLimits;
+
+    string public name;
 
     uint256 public expirationTime;
+
+    /* EVENTS */
 
     event Spend(address indexed recipient, uint256 indexed amount);
 
@@ -36,26 +38,32 @@ contract PayPod is Ownable, Pausable {
 
     event Create(address indexed tokenAddress, uint256 indexed value);
 
+    /* CONSTRUCTOR */
+
     constructor(
-        address[] memory controllers,
+        string memory _name,
+        address[] memory _controllers,
         address[] memory tokenAddresses,
         uint256[] memory limits,
         uint256 _expirationTime
     ) {
-        for (uint256 i = 0; i < controllers.length; ++i) {
-            _controllers.add(controllers[i]);
+        name = _name;
+        for (uint256 i = 0; i < _controllers.length; ++i) {
+            addController(_controllers[i]);
         }
         for (uint256 i = 0; i < tokenAddresses.length; ++i) {
             spendLimits[tokenAddresses[i]] = limits[i];
         }
-        transferOwnership(msg.sender);
         if (_expirationTime > 0) {
             expirationTime = _expirationTime;
         }
+        transferOwnership(msg.sender);
     }
 
+    /* MODIFIERS */
+
     modifier onlyController() {
-        require(_controllers.has(msg.sender), "Caller is not the controller");
+        require(isController(msg.sender), "Caller is not the controller");
         _;
     }
 
@@ -67,23 +75,22 @@ contract PayPod is Ownable, Pausable {
         _;
     }
 
-    function safeTransferERC20(
-        address _tokenAddress,
-        address _recipient,
-        uint256 _amount
-    ) internal returns (bool, bytes memory) {
-        bytes memory data = abi.encodeWithSelector(
-            bytes4(keccak256("transfer(address,uint256)")),
-            _recipient,
-            _amount
+    modifier whenNotExceededLimit(uint256 _amount) {
+        require(
+            spendLimits[address(0x0)] == 0 ||
+                spendLimits[address(0x0)] >= _amount,
+            "Amount exceeds spending limit"
         );
+        _;
+    }
 
-        (bool success, ) = _tokenAddress.call(data);
-
-        if (success) {
-            return (true, "");
-        }
-        return (false, "");
+    modifier whenNotExceededLimitERC20(address _tokenAddress, uint256 _amount) {
+        require(
+            spendLimits[_tokenAddress] == 0 ||
+                spendLimits[_tokenAddress] >= _amount,
+            "Amount exceeds ERC20 spending limit"
+        );
+        _;
     }
 
     /* ONLY CONTROLLER FUNCTIONS */
@@ -93,6 +100,7 @@ contract PayPod is Ownable, Pausable {
         onlyController
         whenNotPaused
         whenNotExpired
+        whenNotExceededLimit(_amount)
     {
         (bool success, ) = _recipient.call{value: _amount}("");
 
@@ -105,7 +113,13 @@ contract PayPod is Ownable, Pausable {
         address _tokenAddress,
         address _recipient,
         uint256 _amount
-    ) external onlyController whenNotPaused whenNotExpired {
+    )
+        external
+        onlyController
+        whenNotPaused
+        whenNotExpired
+        whenNotExceededLimitERC20(_tokenAddress, _amount)
+    {
         bytes memory data = abi.encodeWithSelector(
             bytes4(keccak256("transfer(address,uint256)")),
             _recipient,
@@ -120,7 +134,6 @@ contract PayPod is Ownable, Pausable {
     }
 
     function call(
-        uint256 operation,
         address to,
         uint256 value,
         bytes memory data
@@ -135,37 +148,45 @@ contract PayPod is Ownable, Pausable {
     {
         require(address(this).balance >= value, "Insufficient balance");
 
-        if (operation == 0) {
-            (bool success, bytes memory returnData) = to.call{value: value}(
-                data
-            );
+        (bool success, bytes memory returnData) = to.call{value: value}(data);
 
-            result = returnData;
+        result = returnData;
 
-            if (success) {
-                emit Call(to, value, bytes4(data));
-            }
+        if (success) {
+            emit Call(to, value, bytes4(data));
+        }
+    }
+
+    function create(
+        address to,
+        uint256 value,
+        bytes memory data
+    )
+        public
+        payable
+        virtual
+        onlyController
+        whenNotPaused
+        whenNotExpired
+        returns (bytes memory result)
+    {
+        require(address(this).balance >= value, "Insufficient balance");
+
+        require(
+            to == address(0),
+            "CREATE operations require the receiver address to be empty"
+        );
+        require(data.length != 0, "No contract bytecode provided");
+
+        address contractAddress;
+        assembly {
+            contractAddress := create(value, add(data, 0x20), mload(data))
         }
 
-        if (operation == 1) {
-            require(
-                to == address(0),
-                "CREATE operations require the receiver address to be empty"
-            );
-            require(data.length != 0, "No contract bytecode provided");
+        require(contractAddress != address(0), "Could not deploy contract");
 
-            address contractAddress;
-            assembly {
-                contractAddress := create(value, add(data, 0x20), mload(data))
-            }
-
-            require(contractAddress != address(0), "Could not deploy contract");
-
-            result = abi.encodePacked(contractAddress);
-            emit Create(contractAddress, value);
-        }
-
-        revert("Unknown operation type");
+        result = abi.encodePacked(contractAddress);
+        emit Create(contractAddress, value);
     }
 
     /* ONLY OWNER FUNCTIONS */
@@ -175,12 +196,16 @@ contract PayPod is Ownable, Pausable {
             uint256 balance = address(this).balance;
 
             (bool success, ) = msg.sender.call{value: balance}("");
+
+            if (success) {
+                emit Withdraw(balance);
+            }
         } else {
             (bool success, ) = msg.sender.call{value: _amount}("");
-        }
 
-        if (success) {
-            emit Withdraw(balance);
+            if (success) {
+                emit Withdraw(_amount);
+            }
         }
     }
 
@@ -199,6 +224,10 @@ contract PayPod is Ownable, Pausable {
             );
 
             (bool success, ) = _tokenAddress.call(data);
+
+            if (success) {
+                emit WithdrawERC20(_tokenAddress, balance);
+            }
         } else {
             bytes memory data = abi.encodeWithSelector(
                 bytes4(keccak256("transfer(address,uint256)")),
@@ -207,10 +236,10 @@ contract PayPod is Ownable, Pausable {
             );
 
             (bool success, ) = _tokenAddress.call(data);
-        }
 
-        if (success) {
-            emit WithdrawERC20(_tokenAddress, balance);
+            if (success) {
+                emit WithdrawERC20(_tokenAddress, _amount);
+            }
         }
     }
 

@@ -29,3 +29,13 @@ PayPod is a platform that allows users to easily deploy and manage their pods th
 ### Onboarding for Web3 Games
 
 - Read more on the [Onboarding Guide for Web3 Games](/Onboarding.md)
+
+### Next Steps
+
+- Add better unit and e2e testing
+- Add better responsive design
+- Add event indexing for transaction history
+- Create example game implementations
+- Add better documentation for game onboarding
+- Add support for STATICCALL, DELEGATECALL, CREATE2 on PayPod.sol
+- Beta testing service with games for feedback
